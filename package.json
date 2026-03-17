@@ -1,9 +1,9 @@
 {
   "$schema": "https://json.schemastore.org/package.json",
-  "name": "@tapiocapioca/opencode-smart-title-it",
-  "version": "0.1.7",
+  "name": "@tapiocapioca/opencode-smart-title-int",
+  "version": "0.1.8",
   "type": "module",
-  "description": "OpenCode plugin che genera automaticamente titoli di sessione in italiano usando AI",
+  "description": "OpenCode plugin that auto-generates session titles in your language using AI",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "scripts": {
@@ -22,8 +22,9 @@
     "auto-title",
     "ai",
     "title-generation",
-    "italian",
-    "italiano"
+    "multilingual",
+    "internationalization",
+    "language-detection"
   ],
   "repository": {
     "type": "git",
@@ -33,7 +34,7 @@
     "url": "https://github.com/Tapiocapioca/opencode-smart-title/issues"
   },
   "homepage": "https://github.com/Tapiocapioca/opencode-smart-title#readme",
-  "author": "Dan Mindru (original), Tapiocapioca (Italian version)",
+  "author": "Dan Mindru (original), Tapiocapioca (internationalized version)",
   "license": "MIT",
   "peerDependencies": {
     "@opencode-ai/plugin": ">=0.13.7"
