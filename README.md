@@ -36,14 +36,14 @@ This fork adds **automatic language detection** and **multilingual title generat
 ## Installation
 
 ```bash
-npm install @tapiocapioca/opencode-smart-title
+npm install @tapiocapioca/opencode-smart-title-int
 ```
 
 Add to `~/.config/opencode/opencode.json`:
 
 ```json
 {
-  "plugin": ["@tapiocapioca/opencode-smart-title"]
+  "plugin": ["@tapiocapioca/opencode-smart-title-int"]
 }
 ```
 
