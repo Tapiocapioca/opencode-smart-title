@@ -1,4 +1,4 @@
-# Smart Title Plugin (Internationalized)
+# Smart Title Plugin
 
 Auto-generates meaningful session titles for your OpenCode conversations using AI — **in your language**.
 
@@ -36,14 +36,14 @@ This fork adds **automatic language detection** and **multilingual title generat
 ## Installation
 
 ```bash
-npm install @tapiocapioca/opencode-smart-title-it
+npm install @tapiocapioca/opencode-smart-title
 ```
 
 Add to `~/.config/opencode/opencode.json`:
 
 ```json
 {
-  "plugin": ["@tapiocapioca/opencode-smart-title-it"]
+  "plugin": ["@tapiocapioca/opencode-smart-title"]
 }
 ```
 
