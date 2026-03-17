@@ -98,6 +98,9 @@ async function isSubagentSession(
 // Track idle event count per session for threshold-based updates
 const sessionIdleCount = new Map<string, number>()
 
+// Cache detected language per session - detected once, used throughout session
+const sessionLanguages = new Map<string, string>()
+
 /**
  * Extract only text content from message parts, excluding synthetic content
  */
@@ -373,14 +376,25 @@ async function updateSessionTitle(
             turnCount: turns.length
         })
 
-        // Detect language from first user message
-        const firstUserText = turns[0]?.user?.text || ''
-        const detectedLanguage = detectLanguage(firstUserText)
-        logger.info('update-title', 'Language detected', {
-            sessionId,
-            language: detectedLanguage,
-            sampleText: truncate(firstUserText, 50)
-        })
+        // Check if language already cached for this session
+        let detectedLanguage = sessionLanguages.get(sessionId)
+
+        if (detectedLanguage) {
+            logger.info('update-title', 'Using cached language for session', {
+                sessionId,
+                language: detectedLanguage
+            })
+        } else {
+            // Detect language from first user message and cache it
+            const firstUserText = turns[0]?.user?.text || ''
+            detectedLanguage = detectLanguage(firstUserText)
+            sessionLanguages.set(sessionId, detectedLanguage)
+            logger.info('update-title', 'Language detected and cached for session', {
+                sessionId,
+                language: detectedLanguage,
+                sampleText: truncate(firstUserText, 50)
+            })
+        }
 
         // Log truncated context for debugging
         for (const turn of turns) {
