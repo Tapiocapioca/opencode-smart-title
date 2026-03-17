@@ -15,7 +15,8 @@ import type { Plugin } from "@opencode-ai/plugin"
 import { getConfig } from "./lib/config.js"
 import { Logger } from "./lib/logger.js"
 import { selectModel } from "./lib/model-selector.js"
-import { TITLE_PROMPT } from "./prompt.js"
+import { getTitlePrompt } from "./prompt.js"
+import { detectLanguage } from "./lib/language-detector.js"
 import { join } from "path"
 import { homedir } from "os"
 
@@ -266,12 +267,13 @@ function cleanTitle(raw: string): string {
  */
 async function generateTitleFromContext(
     context: string,
+    language: string,
     configModel: string | undefined,
     logger: Logger,
     client: OpenCodeClient
 ): Promise<string | null> {
     try {
-        logger.debug('title-generation', 'Selecting model', { configModel })
+        logger.debug('title-generation', 'Selecting model', { configModel, language })
 
         const { model, modelInfo, source, reason, failedModel } = await selectModel(
             logger,
@@ -282,7 +284,8 @@ async function generateTitleFromContext(
             providerID: modelInfo.providerID,
             modelID: modelInfo.modelID,
             source,
-            reason
+            reason,
+            language
         })
 
         // Show toast if we had to fallback from a configured model
@@ -320,7 +323,7 @@ async function generateTitleFromContext(
             messages: [
                 {
                     role: 'user',
-                    content: `${TITLE_PROMPT}\n\n<conversation>\n${context}\n</conversation>\n\nOutput the title now:`
+                    content: `${getTitlePrompt(language)}\n\n<conversation>\n${context}\n</conversation>\n\nOutput the title now:`
                 }
             ]
         })
@@ -370,6 +373,15 @@ async function updateSessionTitle(
             turnCount: turns.length
         })
 
+        // Detect language from first user message
+        const firstUserText = turns[0]?.user?.text || ''
+        const detectedLanguage = detectLanguage(firstUserText)
+        logger.info('update-title', 'Language detected', {
+            sessionId,
+            language: detectedLanguage,
+            sampleText: truncate(firstUserText, 50)
+        })
+
         // Log truncated context for debugging
         for (const turn of turns) {
             logger.debug('update-title', 'Turn context', {
@@ -384,6 +396,7 @@ async function updateSessionTitle(
         // Generate title
         const newTitle = await generateTitleFromContext(
             context,
+            detectedLanguage,
             config.model,
             logger,
             client

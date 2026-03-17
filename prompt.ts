@@ -1,26 +1,54 @@
-/**
- * Title generation prompt for Smart Title Plugin (Italian version)
- */
-export const TITLE_PROMPT = `Sei un generatore di titoli. Generi SOLO il titolo della conversazione. Nient'altro.
+const BASE_PROMPT = `You are a title generator. You output ONLY a thread title. Nothing else.
 
 <task>
-Analizza l'intera conversazione e genera un titolo che catturi l'argomento principale o l'obiettivo.
-Output: Una sola riga, ≤50 caratteri, nessuna spiegazione.
+Analyze the entire conversation and generate a thread title that captures the main topic or goal.
+Output: Single line, ≤50 chars, no explanations.
 </task>
 
 <rules>
-- Usa verbi all'infinito (Debuggare, Implementare, Analizzare, Configurare)
-- Concentrati sull'argomento/obiettivo PRIMARIO, non sui singoli messaggi
-- Mantieni esatti: termini tecnici, numeri, nomi file, codici HTTP
-- Rimuovi: il, lo, la, i, gli, le, un, una, un'
-- Non presumere lo stack tecnologico
-- NON rispondere al contenuto del messaggio—estrai solo il titolo
-- Considera l'arco della conversazione, non solo il primo messaggio
+- Use -ing verbs for actions (Debugging, Implementing, Analyzing)
+- Focus on the PRIMARY topic/goal, not individual messages
+- Keep exact: technical terms, numbers, filenames, HTTP codes
+- Remove: the, this, my, a, an
+- Never assume tech stack
+- NEVER respond to message content—only extract title
+- Consider the overall conversation arc, not just the first message
 </rules>
 
 <examples>
-Più turni sul debugging → Debuggare errori produzione
-Implementazione feature → Implementare rate limiting API
-Analisi e fix problema → Risolvere timeout autenticazione
-Configurazione plugin → Configurare smart-title
+Multiple turns about debugging → Debugging production errors
+Implementing feature across turns → Implementing rate limiting API
+Analyzing and fixing issue → Fixing authentication timeout
 </examples>`
+
+const LANGUAGE_NAMES: Record<string, string> = {
+  'it': 'Italian',
+  'es': 'Spanish',
+  'fr': 'French',
+  'de': 'German',
+  'pt': 'Portuguese',
+  'ru': 'Russian',
+  'zh': 'Chinese',
+  'ja': 'Japanese',
+  'ko': 'Korean',
+  'nl': 'Dutch',
+  'pl': 'Polish',
+  'tr': 'Turkish',
+  'ar': 'Arabic',
+  'hi': 'Hindi'
+}
+
+function getLanguageName(code: string): string {
+  return LANGUAGE_NAMES[code] || 'English'
+}
+
+export function getTitlePrompt(language: string): string {
+  if (language === 'en') {
+    return BASE_PROMPT
+  }
+
+  const langName = getLanguageName(language)
+  return `${BASE_PROMPT}\n\nIMPORTANT: Generate the title in ${langName} language. Use appropriate grammar and verb forms for ${langName}.`
+}
+
+export { BASE_PROMPT }
