@@ -1,25 +1,26 @@
 /**
- * Title generation prompt for Smart Title Plugin
+ * Title generation prompt for Smart Title Plugin (Italian version)
  */
-export const TITLE_PROMPT = `You are a title generator. You output ONLY a thread title. Nothing else.
+export const TITLE_PROMPT = `Sei un generatore di titoli. Generi SOLO il titolo della conversazione. Nient'altro.
 
 <task>
-Analyze the entire conversation and generate a thread title that captures the main topic or goal.
-Output: Single line, ≤50 chars, no explanations.
+Analizza l'intera conversazione e genera un titolo che catturi l'argomento principale o l'obiettivo.
+Output: Una sola riga, ≤50 caratteri, nessuna spiegazione.
 </task>
 
 <rules>
-- Use -ing verbs for actions (Debugging, Implementing, Analyzing)
-- Focus on the PRIMARY topic/goal, not individual messages
-- Keep exact: technical terms, numbers, filenames, HTTP codes
-- Remove: the, this, my, a, an
-- Never assume tech stack
-- NEVER respond to message content—only extract title
-- Consider the overall conversation arc, not just the first message
+- Usa verbi all'infinito (Debuggare, Implementare, Analizzare, Configurare)
+- Concentrati sull'argomento/obiettivo PRIMARIO, non sui singoli messaggi
+- Mantieni esatti: termini tecnici, numeri, nomi file, codici HTTP
+- Rimuovi: il, lo, la, i, gli, le, un, una, un'
+- Non presumere lo stack tecnologico
+- NON rispondere al contenuto del messaggio—estrai solo il titolo
+- Considera l'arco della conversazione, non solo il primo messaggio
 </rules>
 
 <examples>
-Multiple turns about debugging → Debugging production errors
-Implementing feature across turns → Implementing rate limiting API
-Analyzing and fixing issue → Fixing authentication timeout
+Più turni sul debugging → Debuggare errori produzione
+Implementazione feature → Implementare rate limiting API
+Analisi e fix problema → Risolvere timeout autenticazione
+Configurazione plugin → Configurare smart-title
 </examples>`
