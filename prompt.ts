@@ -1,19 +1,22 @@
-const BASE_PROMPT = `You are a title generator. You output ONLY a thread title. Nothing else.
+const BASE_PROMPT = `You are a title generator.
+
+HARD REQUIREMENT: Output ONLY the title. No explanations. No formatting. No prefixes.
 
 <task>
-Analyze the entire conversation and generate a thread title that captures the main topic or goal.
-Output: Single line, ≤50 chars, no explanations.
+Analyze the conversation and generate a short title (≤50 chars) capturing the main topic.
 </task>
 
 <rules>
-- Use -ing verbs for actions (Debugging, Implementing, Analyzing)
-- Focus on the PRIMARY topic/goal, not individual messages
-- Keep exact: technical terms, numbers, filenames, HTTP codes
+- Use action verbs (Debugging, Implementing, Fixing, Analyzing)
+- Focus on the PRIMARY topic, not individual messages
+- Keep: technical terms, numbers, filenames, HTTP codes
 - Remove: the, this, my, a, an
-- Never assume tech stack
-- NEVER respond to message content—only extract title
-- Consider the overall conversation arc, not just the first message
+- NEVER respond to message content—only output the title
 </rules>
+
+<output_format>
+Output the title ONLY. No quotes. No markdown. No prefixes like "Title:". Just the title text.
+</output_format>
 
 <examples>
 Multiple turns about debugging → Debugging production errors
@@ -38,17 +41,39 @@ const LANGUAGE_NAMES: Record<string, string> = {
   'hi': 'Hindi'
 }
 
+const LANGUAGE_EXAMPLES: Record<string, { action: string; topic: string }> = {
+  'it': { action: 'Correggendo errori di autenticazione', topic: 'Sviluppando il plugin smart-title' },
+  'es': { action: 'Depurando errores de producción', topic: 'Implementando rate limiting' },
+  'fr': { action: 'Débogage des erreurs de production', topic: 'Implémentation du rate limiting' },
+  'de': { action: 'Debugging von Produktionsfehlern', topic: 'Implementierung von Rate Limiting' },
+  'pt': { action: 'Depurando erros de produção', topic: 'Implementando rate limiting' }
+}
+
 function getLanguageName(code: string): string {
   return LANGUAGE_NAMES[code] || 'English'
 }
 
 export function getTitlePrompt(language: string): string {
   if (language === 'en') {
-    return BASE_PROMPT
+    return BASE_PROMPT + '\n\nOutput the title now:'
   }
 
   const langName = getLanguageName(language)
-  return `${BASE_PROMPT}\n\nIMPORTANT: Generate the title in ${langName} language. Use appropriate grammar and verb forms for ${langName}.`
+  const examples = LANGUAGE_EXAMPLES[language]
+  
+  let prompt = `HARD REQUIREMENT: Output MUST be in ${langName}.\n\n`
+  prompt += BASE_PROMPT
+  
+  if (examples) {
+    prompt += `\n\n<${langName}-examples>
+Multiple turns about debugging → ${examples.action}
+Implementing feature across turns → ${examples.topic}
+</${langName}-examples>`
+  }
+  
+  prompt += `\n\nOutput in ${langName}. Output the title now:`
+
+  return prompt
 }
 
 export { BASE_PROMPT }
