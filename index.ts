@@ -251,7 +251,7 @@ function formatContextForTitle(turns: ConversationTurn[]): string {
  */
 function cleanTitle(raw: string): string {
     // Remove thinking tags
-    let cleaned = raw.replace(/<think>[\s\S]*?<\/think>\s*/g, "")
+    let cleaned = raw.replace(/<tool_call>[\s\S]*?<\/think>\s*/g, "")
 
     // Get first non-empty line
     const lines = cleaned.split("\n").map(line => line.trim())
@@ -473,8 +473,8 @@ const SmartTitlePlugin: Plugin = async (ctx) => {
 
     return {
         event: async ({ event }) => {
-            // @ts-ignore - session.status is not yet in the SDK types
-            if (event.type === "session.status" && event.properties.status.type === "idle") {
+            // @ts-ignore - session.idle is not yet in the SDK types
+            if (event.type === "session.idle") {
                 // @ts-ignore
                 const sessionId = event.properties.sessionID
 
